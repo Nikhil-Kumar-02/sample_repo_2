@@ -6,5 +6,6 @@ const { authRequestValidator } = require('../middleware/index');
 router.post('/signUp',authRequestValidator.validateUser,userController.create);
 router.delete('/remUser/:id',userController.deleteUser);
 router.post('/signIn' ,authRequestValidator.validateUser , userController.signIn);
+router.get('/isAuthenticated' , userController.isAuthenticated);
 
 module.exports = router;

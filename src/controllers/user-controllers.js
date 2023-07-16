@@ -58,19 +58,41 @@ const signIn = async (req,res) => {
             sucess : true,
             error : {}
         })
-    } catch (error) {
-        console.log("something went wrong in the controller layer");
-        return res.status(500).json({
-            data : {},
-            message : "Not able to perform the signIN request",
-            sucess : false,
-            error : error
-        })
+        } catch (error) {
+            console.log("something went wrong in the controller layer");
+            return res.status(500).json({
+                data : {},
+                message : "Not able to perform the signIN request",
+                sucess : false,
+                error : error
+            })
+        }
     }
-}
+
+    const isAuthenticated = async (req,res) => {
+        try {
+            const incomingToken = req.headers['x-access-token'];
+            const response = await userService.isAuthenticated(incomingToken);
+            return res.status(200).json({
+                sucess : true,
+                message : "user is authenticated and token is valid",
+                error : {},
+                data : response
+            });
+        } catch (error) {
+            console.log("something went wrong in the controller layer while authentication");
+            return res.status(500).json({
+                data : {},
+                message : "User is not authenticated to perform activity",
+                sucess : false,
+                error : error
+            })
+        }
+    }
 
 module.exports = {
     create,
     deleteUser,
-    signIn
+    signIn,
+    isAuthenticated
 }
