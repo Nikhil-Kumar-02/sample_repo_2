@@ -29,9 +29,9 @@ const create = async (req,res) => {
 
 const deleteUser = async (req,res) => {
     try {
-        const reponse = await userService.delete(req.params.id);
+        const rseponse = await userService.delete(req.params.id);
         return res.status(201).json({
-            data : reponse,
+            data : rseponse,
             message : "An account has been sucessfully deleted",
             sucess : true,
             error : {}
@@ -45,10 +45,32 @@ const deleteUser = async (req,res) => {
             error : error
         })
     }
+}
 
+const signIn = async (req,res) => {
+    try {
+        const response = await userService.signIn(req.body.email,req.body.password);
+        //here in response the jwt token is present and that will be returned
+        console.log("the recieved jwt token for the sign in is : ",response);
+        return res.status(200).json({
+            data : response,
+            message : "You have been sucessfully signed in",
+            sucess : true,
+            error : {}
+        })
+    } catch (error) {
+        console.log("something went wrong in the controller layer");
+        return res.status(500).json({
+            data : {},
+            message : "Not able to perform the signIN request",
+            sucess : false,
+            error : error
+        })
+    }
 }
 
 module.exports = {
     create,
-    deleteUser
+    deleteUser,
+    signIn
 }

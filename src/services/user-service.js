@@ -28,6 +28,33 @@ class UserService{
         }
     }
 
+    async signIn(email , plainPassword){
+        try {
+            //now i have the user sent email and plainPassword
+            //first get the password corrosponding to the input email
+            const userDetails = await userRepository.getByEmail(email);
+            console.log(userDetails);
+            //now we have all user details with the corrosponding email
+            //now check if the incoming password is same as the password while registering
+
+            //also it is possible that incoming email does not exists in the database
+            //will do some other day
+            
+            const isValidUser = this.checkPassword(plainPassword , userDetails.password);
+            console.log("is he a valid user ",isValidUser);
+            //if he is a valid user then we will create a token and send it to the frontend
+            if(!isValidUser){
+                console.log("you have entered a wrong password please try again");
+                throw {error : "you have entered a wrong password please try again"};
+            }
+
+            return this.createToken({ email : userDetails.email , id : userDetails.id });
+        } catch (error) {
+            console.log("something went wrong while signing in at the service layer");
+            throw error;
+        }
+    }
+
     createToken(data){
         try {
             const token = jwt.sign(data , JWT_KEY , { expiresIn: '1d' });
@@ -59,7 +86,8 @@ class UserService{
             throw error;
         }
     }
-
+    //also checkPassword and create token is used by some class methods only so we can 
+    //also make them private
 }
 
 module.exports = UserService;
