@@ -3,6 +3,8 @@ const app = express();
 const {PORT} = require('./config/serverConfig');
 const apiRoutes = require('./router/user-routes');
 const bodyParser = require('body-parser');
+const UserRepository = require('./repository/user-repository');
+const userRepository = new UserRepository();
 
 const startServer = async () => {
 
@@ -14,6 +16,9 @@ const startServer = async () => {
 
     app.listen( PORT , async () => {
         console.log(`server is running at port ${PORT}`);
+        const id = 4;
+        const userData = await userRepository.getById(id);
+        console.log(userData);
     })
 
 }

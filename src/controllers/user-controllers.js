@@ -29,9 +29,7 @@ const create = async (req,res) => {
 
 const deleteUser = async (req,res) => {
     try {
-        const reponse = await userService.delete({
-            id : req.params.id
-        });
+        const reponse = await userService.delete(req.params.id);
         return res.status(201).json({
             data : reponse,
             message : "An account has been sucessfully deleted",

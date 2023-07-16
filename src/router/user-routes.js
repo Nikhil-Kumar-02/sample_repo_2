@@ -3,6 +3,6 @@ const router = express.Router();
 const userController = require('../controllers/user-controllers');
 
 router.post('/signUp',userController.create);
-router.delete('/remUser',userController.deleteUser);
+router.delete('/remUser/:id',userController.deleteUser);
 
 module.exports = router;
