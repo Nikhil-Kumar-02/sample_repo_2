@@ -1,3 +1,4 @@
+const serverConfig = require('../config/serverConfig');
 const UserService = require('../services/user-service');
 
 const userService = new UserService();
@@ -90,9 +91,30 @@ const signIn = async (req,res) => {
         }
     }
 
+    const isAdmin = async (req,res) => {
+        try {
+            const response = await userService.isAdmin(req.body.id);
+            return res.status(200).json({
+                data : response,
+                sucess : true,
+                error : {},
+                message : "sucessfully checked if the user is admin or not"
+            })
+        } catch (error) {
+            console.log("something went wrong in the controller while checking for admin");
+            return res.status(400).json({
+                sucess : false,
+                data : {},
+                error : error,
+                message : "something went wrong"
+            })
+        }
+    }
+
 module.exports = {
     create,
     deleteUser,
     signIn,
-    isAuthenticated
+    isAuthenticated,
+    isAdmin
 }

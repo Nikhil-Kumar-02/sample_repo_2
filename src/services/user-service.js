@@ -114,7 +114,16 @@ class UserService{
             console.log("something went wrong in the service layer while token authentication");
             throw error;   
         }
+    }
 
+    async isAdmin(userId){
+        try {
+            const response = await userRepository.isAdmin(userId);
+            return response;
+        } catch (error) {
+            console.log("something went wrong in the service layer while checking if is admin?");
+            throw error;   
+        }
     }
 }
 

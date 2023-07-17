@@ -11,6 +11,20 @@ const validateUser = (req,res,next)=>{
     next();
 }
 
+const isAdminRequsetValid = (req,res,next)=>{
+    if(!req.body.id){
+        console.log("something went wrong in middleware");
+        return res.status(400).json({
+            message : "the mandatory feild id is not present/sent",
+            data : {},
+            sucess : false,
+            error : "id is missing"
+        })
+    }
+    next();
+}
+
 module.exports = {
-    validateUser
+    validateUser,
+    isAdminRequsetValid
 }

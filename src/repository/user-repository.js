@@ -1,4 +1,4 @@
-const { User } = require('../models/index');
+const { User , Role } = require('../models/index');
 
 class UserRepository{
 
@@ -51,6 +51,25 @@ class UserRepository{
             return userDetails;
         } catch (error) {
             console.log("something went wrong while getting details by email in the repo layer");
+            throw error;
+        }
+    }
+
+    async isAdmin(userId){
+        try {
+            const user = await User.findByPk(userId);
+            console.log("after user and before admin key");
+            const adminKey = await Role.findOne({
+                where : {
+                    userRole : 'ADMIN'
+                }
+            });
+            const adminRoleAssigned = await user.hasRole(adminKey);
+            //from above we will get boolean value which indicates if he is admin or not
+            console.log("the user is valid true/false :" , adminRoleAssigned);
+            return adminRoleAssigned;
+        } catch (error) {
+            console.log("something went wrong while admin verification in the repo layer");
             throw error;
         }
     }
