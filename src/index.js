@@ -27,6 +27,7 @@ const startServer = async () => {
         //which an admin can do then we can simply do u1.hasRole(1) is he has then
         //he is authorized to do so
         console.log(res);
+        
 
         if(DB_SYNC){
             db.sequelize.sync({alter : true});
