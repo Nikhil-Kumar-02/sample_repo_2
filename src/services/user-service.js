@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const AppErrors = require('../utils/error-handlers');
 const userRepository = new UserRepository();
 
+
 class UserService{
 
     async create(data){
@@ -47,7 +48,7 @@ class UserService{
             //now check if the incoming password is same as the password while registering
 
             //also it is possible that incoming email does not exists in the database
-            //will do some other day
+            //will do some other day //done
             
             const isValidUser = this.#checkPassword(plainPassword , userDetails.password);
             console.log("is he a valid user ",isValidUser);
@@ -59,6 +60,9 @@ class UserService{
 
             return this.#createToken({ email : userDetails.email , id : userDetails.id });
         } catch (error) {
+            if(error.name == 'EmailNotFound'){
+                throw error;
+            }
             console.log("something went wrong while signing in at the service layer");
             throw error;
         }
