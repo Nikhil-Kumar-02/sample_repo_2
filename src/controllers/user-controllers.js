@@ -16,12 +16,12 @@ const create = async (req,res) => {
             error : {}
         })
     } catch (error) {
-        console.log("something went wrong in the controller layer");
-        return res.status(500).json({
+        // console.log("something went wrong in the controller layer");
+        return res.status(error.statusCode).json({
             data : {},
-            message : "Not able to perform the required request",
+            message : error.message,
             sucess : false,
-            error : error
+            error : error.explanation
         })
     }
 
