@@ -8,6 +8,15 @@ class UserRepository{
     async create(data){
         try {
             const newUser = await User.create(data);
+            //now we also have to make sure that whenever anyone makes an account we have 
+            //entitle him a customer role by default
+            const role = await Role.findOne({
+                where : {
+                    userRole : 'CUSTOMER'
+                }
+            });
+            //NOW WE WILL ASSIGN THIS USER CUSTOMER ROLE
+            newUser.addRole(role);
             return newUser;
         } catch (error) {
             // console.log(error);
@@ -78,7 +87,6 @@ class UserRepository{
     async isAdmin(userId){
         try {
             const user = await User.findByPk(userId);
-            console.log("after user and before admin key");
             const adminKey = await Role.findOne({
                 where : {
                     userRole : 'ADMIN'
