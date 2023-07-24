@@ -10,7 +10,21 @@ class UserService{
 
     async create(data){
         try {
+            // console.log('incoming password is : ', data.password);
             const newUser = await userRepository.create(data);
+            //here in the service layer i want to add the logic that whenever someone
+            //signs up then he should automatically login as well
+            //since he has just made the account so we need not to cross check the email
+            //and password rather we can directly generate token for him
+            //but the thing is that the incoming password is encrypted so we first have to 
+            //decrypt it then generate the token?
+            //no the incoming password is raw it will be encrypted before making entry in database
+
+            const token = this.#createToken({ email : newUser.email , id : newUser.id });
+            newUser.dataValues.token = token;
+            //but this newUser object also has password feild and we dont want to send the password
+            //deleting password key value pair from the object
+            delete newUser.dataValues.password;
             return newUser;
         } catch (error) {
             if(error.name == 'SequelizeValidationError'){
@@ -43,7 +57,7 @@ class UserService{
             //now i have the user sent email and plainPassword
             //first get the password corrosponding to the input email
             const userDetails = await userRepository.getByEmail(email);
-            console.log(userDetails);
+            console.log('details of the user who is about to sign in : ',userDetails);
             //now we have all user details with the corrosponding email
             //now check if the incoming password is same as the password while registering
 
@@ -55,13 +69,21 @@ class UserService{
             //if he is a valid user then we will create a token and send it to the frontend
             if(!isValidUser){
                 console.log("you have entered a wrong password please try again");
-                throw {error : "you have entered a wrong password please try again"};
+                throw {name : "IncorrectPassword"};
             }
 
             return this.#createToken({ email : userDetails.email , id : userDetails.id });
         } catch (error) {
             if(error.name == 'EmailNotFound'){
                 throw error;
+            }
+            if(error.name == "IncorrectPassword"){
+                throw new AppErrors(
+                    'clientSideError',
+                    'Incorrect password',
+                    'please enter the correct password',
+                    400
+                )
             }
             console.log("something went wrong while signing in at the service layer");
             throw error;
@@ -106,11 +128,13 @@ class UserService{
     async isAuthenticated(token){
         try {
             const istokenValid = this.#verifyToken(token);
+            console.log('is the user valid : ' , istokenValid);
+            
             if(!istokenValid){
                 throw {error : "the input token is not a valid token"};
             }
             //if token is valid then we will get this as response as we have seen 
-            //{ id : " " , email : " " , password : " " , iat : " " , exp : " " }
+            //{ id : " " , email : " " , iat : " " , exp : " " }
 
             //now even if the token is a vaild token then also there arises a edge case
             //where the user makes an account in the site and gets the token saved on the frontend

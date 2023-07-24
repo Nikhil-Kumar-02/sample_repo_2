@@ -11,7 +11,7 @@ const create = async (req,res) => {
         });
         return res.status(201).json({
             data : newUser,
-            message : "A new user account has been sucessfully created",
+            message : "A new user account has been sucessfully created and you are also signed in",
             sucess : true,
             error : {}
         })
@@ -60,7 +60,7 @@ const signIn = async (req,res) => {
             error : {}
         })
         } catch (error) {
-            console.log("something went wrong in the controller layer");
+            // console.log("something went wrong in the controller layer");
             return res.status(error.statusCode).json({
                 message : error.message,
                 error : error.explanation,
@@ -73,6 +73,7 @@ const signIn = async (req,res) => {
     const isAuthenticated = async (req,res) => {
         try {
             const incomingToken = req.headers['x-access-token'];
+            console.log('the incoming token is : ' , incomingToken);
             const response = await userService.isAuthenticated(incomingToken);
             return res.status(200).json({
                 sucess : true,

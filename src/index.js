@@ -24,11 +24,11 @@ const startServer = async () => {
         // const res = await r1.getUsers();
         // const res = await u1.hasRole(3);
         //now can you see how simple authorization will be now as now if user u1 is doing something
-        //which an admin can do then we can simply do u1.hasRole(1) is he has then
+        //which an admin can do then we can simply do u1.hasRole(1) if he has then
         //he is authorized to do so
         // console.log(res);
 
-
+        
         if(DB_SYNC){
             db.sequelize.sync({alter : true});
         }
